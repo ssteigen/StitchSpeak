@@ -120,41 +120,39 @@ function CrochetChart({ text, alphabet }) {
 
   return (
     <div className="preview-section">
-      <div className="chart-preview">
-        {chart ? (
-          <div 
-            className="chart-grid"
-            style={{
-              gridTemplateColumns: `repeat(${chart[0]?.length || 0}, ${cellSize}px)`,
-              gap: `${CHART_SETTINGS.CELL_GAP}px`,
-              maxWidth: '100%',
-              overflow: 'auto'
-            }}
-          >
-            {chart.flat().map((cell, index) => (
-              <div
-                key={index}
-                className={`chart-cell ${cell.type}`}
-                style={{
-                  width: `${cellSize}px`,
-                  height: `${cellSize}px`,
-                  fontSize: `${Math.max(8, cellSize * 0.3)}px`
-                }}
-                title={cell.char || ''}
-              >
-                {cell.char}
-              </div>
-            ))}
-          </div>
-        ) : (
-          <div className="empty-state">
-            <svg viewBox="0 0 24 24" fill="currentColor">
-              <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/>
-            </svg>
-            <p>Enter some text to see your crochet chart!</p>
-          </div>
-        )}
-      </div>
+      {chart ? (
+        <div 
+          className="chart-grid"
+          style={{
+            gridTemplateColumns: `repeat(${chart[0]?.length || 0}, ${cellSize}px)`,
+            gap: `${CHART_SETTINGS.CELL_GAP}px`,
+            maxWidth: '100%',
+            overflow: 'auto'
+          }}
+        >
+          {chart.flat().map((cell, index) => (
+            <div
+              key={index}
+              className={`chart-cell ${cell.type}`}
+              style={{
+                width: `${cellSize}px`,
+                height: `${cellSize}px`,
+                fontSize: `${Math.max(8, cellSize * 0.3)}px`
+              }}
+              title={cell.char || ''}
+            >
+              {cell.char}
+            </div>
+          ))}
+        </div>
+      ) : (
+        <div className="empty-state">
+          <svg viewBox="0 0 24 24" fill="currentColor">
+            <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/>
+          </svg>
+          <p>Enter some text to see your crochet chart!</p>
+        </div>
+      )}
 
       {chart && (
         <div style={{ marginTop: '1rem', fontSize: '0.9rem', color: '#666' }}>

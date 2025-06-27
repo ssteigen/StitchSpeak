@@ -50,7 +50,7 @@ function App() {
     <div className="container">
       <header className="header">
         <h1>🧶 {APP_METADATA.NAME}</h1>
-        <p>{APP_METADATA.DESCRIPTION}</p>
+        <p className="subtitle">{APP_METADATA.DESCRIPTION}</p>
       </header>
 
       <main className="main-content">

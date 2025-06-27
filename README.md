@@ -1,48 +1,22 @@
-# 🧶 StitchSpeak
+# StitchSpeak 🧶
 
-StitchSpeak is a modern web application for creating and previewing text needlework charts. Input your text and see how it would look as a needlework pattern!
+A web application that converts text into crochet chart patterns using custom alphabets.
 
 ## Features
 
-- **Text Input**: Enter any text to see a live preview of the needlework chart
-- **Dynamic Alphabets**: Automatically loads all valid alphabet files from the alphabets directory
+- **Text to Chart Conversion**: Convert any text into a crochet chart pattern
+- **Multiple Alphabets**: Choose from different alphabet styles and sizes
 - **Real-time Preview**: See your chart update as you type
+- **Customizable Colors**: Blue for main color stitches, red for contrast
 - **Responsive Design**: Works on desktop and mobile devices
-- **Font Validation Script**: Command-line tool for batch validation of alphabet files
-- **Configurable Settings**: Centralized constants for easy customization
+- **Font Validation**: Built-in validation for alphabet files
 
-## Getting Started
+## Quick Start
 
-### Prerequisites
-
-- Node.js (version 14 or higher)
-- npm or yarn
-
-### Installation
-
-1. Clone or download this repository
-2. Navigate to the project directory
-3. Install dependencies:
-
-```bash
-npm install
-```
-
-4. Start the development server:
-
-```bash
-npm run dev
-```
-
-5. Open your browser and go to `http://localhost:3000` (or the port shown in the terminal)
-
-## Usage
-
-### Basic Usage
-
-1. **Enter Text**: Type or paste your text in the "Sample Text" area
-2. **Choose Font**: Select from available alphabets using the alphabet buttons
-3. **View Preview**: See the needlework chart preview update in real-time
+1. **Enter Text**: Type or paste your text in the input field
+2. **Choose Alphabet**: Select from available alphabet styles
+3. **View Chart**: See the crochet chart pattern generated in real-time
+4. **Follow Pattern**: Use the chart to create your crochet project
 
 ### Adding New Alphabets
 
@@ -124,23 +98,24 @@ This will:
 StitchSpeak/
 ├── src/
 │   ├── components/
-│   │   ├── TextInput.jsx          # Text input handling
-│   │   └── CrochetChart.jsx       # Chart rendering and display
+│   │   ├── TextInput.jsx                    # Text input handling
+│   │   ├── CrochetChart.jsx                 # Chart rendering and display
+│   │   └── AlphabetInfo.jsx                 # Alphabet information display
 │   ├── utils/
-│   │   ├── alphabetLoader.js      # Dynamic alphabet loading utility
-│   │   └── fontValidator.js       # Font validation utility
-│   ├── constants.js               # App constants and configuration
-│   ├── App.jsx                    # Main application logic
-│   ├── main.jsx                   # Application entry point
-│   └── index.css                  # Application styles
-├── alphabets/                     # Alphabet files (auto-loaded)
-│   ├── alphabet-1.json            # Block-style alphabet
-│   ├── alphabet-2.json            # Clean pattern alphabet
-│   └── decorative-serif.json      # Large decorative font
+│   │   ├── alphabetLoader.js                # Dynamic alphabet loading utility
+│   │   └── fontValidator.js                 # Font validation utility
+│   ├── constants.js                         # App constants and configuration
+│   ├── App.jsx                              # Main application logic
+│   ├── main.jsx                             # Application entry point
+│   └── index.css                            # Application styles
+├── alphabets/                               # Alphabet files (auto-loaded)
+│   ├── alphabet-1.json                      # Block-style alphabet
+│   ├── alphabet-2.json                      # Clean pattern alphabet
+│   └── decorative-serif.json                # Large decorative font
 ├── scripts/
-│   └── validate-fonts.js          # Command-line validation script
-├── font-validation-report.md      # Generated validation report
-└── README.md                      # This file
+│   └── validate-fonts.js                    # Command-line validation script
+├── font-validation-report.md                # Generated validation report
+└── README.md                                # This file
 ```
 
 ## Configuration
@@ -195,18 +170,10 @@ The modular component structure makes it easy to add new features:
 
 - `TextInput.jsx` - Text input handling
 - `CrochetChart.jsx` - Chart rendering and display
+- `AlphabetInfo.jsx` - Alphabet information and validation display
 - `App.jsx` - Main application logic
 - `utils/alphabetLoader.js` - Dynamic alphabet loading
 - `utils/fontValidator.js` - Font validation utility
-- `constants.js` - App configuration and defaults
-
-### Extending the Font Validator
-
-The font validator is extensible and can be customized:
-
-- Add new validation rules in `src/utils/fontValidator.js`
-- Modify validation criteria in the `VALIDATION_RULES` constant
-- Add custom validation methods to the `FontValidator` class
 
 ## Development
 
