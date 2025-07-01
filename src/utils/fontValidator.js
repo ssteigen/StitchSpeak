@@ -80,16 +80,29 @@ export class FontValidator {
     }
 
     // Validate each character
-    for (const [char, pattern] of Object.entries(characters)) {
-      this.validateCharacter(char, pattern, height)
+    for (const [char, charData] of Object.entries(characters)) {
+      this.validateCharacter(char, charData, height)
     }
   }
 
   // Validate individual character
-  validateCharacter(char, pattern, expectedHeight) {
+  validateCharacter(char, charData, alphabetDefaultHeight) {
     // Check character key
     if (char.length !== 1) {
       this.errors.push(`Character key must be a single character: "${char}"`)
+      return
+    }
+
+    // Handle both old format (array) and new format (object with pattern and baseline)
+    let pattern, baseline
+    if (Array.isArray(charData)) {
+      pattern = charData
+      baseline = alphabetDefaultHeight - 1 // Default to bottom row for old format
+    } else if (charData && typeof charData === 'object' && charData.pattern) {
+      pattern = charData.pattern
+      baseline = charData.baseline !== undefined ? charData.baseline : (pattern.length - 1)
+    } else {
+      this.errors.push(`Character "${char}" must be an array or object with pattern property`)
       return
     }
 
@@ -99,13 +112,10 @@ export class FontValidator {
       return
     }
 
-    // Check pattern length matches height
-    if (pattern.length !== expectedHeight) {
-      this.errors.push(`Character "${char}" has ${pattern.length} rows, expected ${expectedHeight}`)
-      return
-    }
+    // Allow variable heights, do not warn if different from alphabet height
+    // (Removed warning for height mismatch)
 
-    // Check for consistent row widths
+    // Check for consistent row widths within this character
     const rowWidths = pattern.map(row => typeof row === 'string' ? row.length : -1)
     const uniqueWidths = Array.from(new Set(rowWidths))
     if (uniqueWidths.length > 1) {
@@ -116,25 +126,27 @@ export class FontValidator {
     let maxWidth = 0
     for (let i = 0; i < pattern.length; i++) {
       const row = pattern[i]
-      
       if (typeof row !== 'string') {
         this.errors.push(`Character "${char}" row ${i + 1} must be a string`)
         continue
       }
-
       // Check for invalid characters
       const invalidChars = this.findInvalidCharacters(row)
       if (invalidChars.length > 0) {
         this.errors.push(`Character "${char}" row ${i + 1} contains invalid characters: ${invalidChars.join(', ')}`)
       }
-
-      // Track max width
       maxWidth = Math.max(maxWidth, row.length)
     }
 
-    // Check for empty pattern
-    if (maxWidth === 0) {
+    // Allow minimal empty pattern (e.g., [" "]), but warn if no visible content
+    const hasContent = pattern.some(row => row && row.split('').some(c => ['█', '1', 'x'].includes(c)))
+    if (!hasContent) {
       this.warnings.push(`Character "${char}" has no visible content`)
+    }
+
+    // Validate baseline is within pattern bounds
+    if (typeof baseline !== 'number' || baseline < 0 || baseline >= pattern.length) {
+      this.errors.push(`Character "${char}" baseline (${baseline}) is out of bounds for pattern of height ${pattern.length}`)
     }
   }
 
@@ -153,7 +165,17 @@ export class FontValidator {
   validateWidthConsistency(characters) {
     const widths = []
     
-    for (const [char, pattern] of Object.entries(characters)) {
+    for (const [char, charData] of Object.entries(characters)) {
+      // Handle both old format (array) and new format (object with pattern and baseline)
+      let pattern
+      if (Array.isArray(charData)) {
+        pattern = charData
+      } else if (charData && typeof charData === 'object' && charData.pattern) {
+        pattern = charData.pattern
+      } else {
+        continue // Skip invalid characters
+      }
+      
       const maxWidth = Math.max(...pattern.map(row => row.length))
       widths.push({ char, width: maxWidth })
     }

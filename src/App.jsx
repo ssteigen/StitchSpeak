@@ -2,6 +2,8 @@ import React, { useState, useEffect } from 'react'
 import CrochetChart from './components/CrochetChart'
 import TextInput from './components/TextInput'
 import AlphabetInfo from './components/AlphabetInfo'
+import AlphabetEditor from './components/AlphabetEditor'
+import AlphabetButton from './components/AlphabetButton'
 import { loadAllAlphabets, getDefaultAlphabet } from './utils/alphabetLoader'
 import { 
   DEFAULT_INPUT_TEXT, 
@@ -14,6 +16,7 @@ function App() {
   const [allAlphabets, setAllAlphabets] = useState([])
   const [currentAlphabet, setCurrentAlphabet] = useState(null)
   const [isLoading, setIsLoading] = useState(true)
+  const [isEditing, setIsEditing] = useState(false)
 
   useEffect(() => {
     // Load all alphabets on component mount
@@ -28,6 +31,30 @@ function App() {
 
   const handleTextChange = (text) => {
     setInputText(text)
+  }
+
+  const handleEditAlphabet = () => {
+    setIsEditing(true)
+  }
+
+  const handleSaveAlphabet = (editedAlphabet) => {
+    // Update the current alphabet
+    setCurrentAlphabet(editedAlphabet)
+    
+    // Update the alphabet in the allAlphabets array
+    setAllAlphabets(prevAlphabets => 
+      prevAlphabets.map(({ key, name, alphabet }) => 
+        alphabet.name === editedAlphabet.name 
+          ? { key, name, alphabet: editedAlphabet }
+          : { key, name, alphabet }
+      )
+    )
+    
+    setIsEditing(false)
+  }
+
+  const handleCancelEdit = () => {
+    setIsEditing(false)
   }
 
   if (isLoading) {
@@ -46,6 +73,18 @@ function App() {
     )
   }
 
+  if (isEditing) {
+    return (
+      <div className="container">
+        <AlphabetEditor 
+          alphabet={currentAlphabet}
+          onSave={handleSaveAlphabet}
+          onCancel={handleCancelEdit}
+        />
+      </div>
+    )
+  }
+
   return (
     <div className="container">
       <header className="header">
@@ -59,15 +98,20 @@ function App() {
             <label>{UI_CONFIG.ALPHABET_SELECTOR_LABEL}</label>
             <div className="alphabet-buttons">
               {allAlphabets.map(({ key, name, alphabet }) => (
-                <button
+                <AlphabetButton
                   key={key}
+                  alphabet={alphabet}
+                  isActive={currentAlphabet.name === name}
                   onClick={() => setCurrentAlphabet(alphabet)}
-                  className={`alphabet-btn ${currentAlphabet.name === name ? 'active' : ''}`}
-                >
-                  {name}
-                </button>
+                />
               ))}
             </div>
+            <button 
+              onClick={handleEditAlphabet}
+              className="edit-alphabet-btn"
+            >
+              ✏️ Edit Alphabet
+            </button>
           </div>
         </section>
 

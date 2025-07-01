@@ -7,6 +7,7 @@ A web application that converts text into crochet chart patterns using custom al
 - **Text to Chart Conversion**: Convert any text into a crochet chart pattern
 - **Multiple Alphabets**: Choose from different alphabet styles and sizes
 - **Real-time Preview**: See your chart update as you type
+- **Alphabet Editor**: Visually edit alphabet characters by clicking cells
 - **Customizable Colors**: Blue for main color stitches, red for contrast
 - **Responsive Design**: Works on desktop and mobile devices
 - **Font Validation**: Built-in validation for alphabet files
@@ -17,6 +18,31 @@ A web application that converts text into crochet chart patterns using custom al
 2. **Choose Alphabet**: Select from available alphabet styles
 3. **View Chart**: See the crochet chart pattern generated in real-time
 4. **Follow Pattern**: Use the chart to create your crochet project
+
+### Editing Alphabets
+
+You can edit any alphabet using the built-in editor:
+
+1. **Click "Edit Alphabet"**: Use the green edit button below the alphabet selector
+2. **Select Character**: Choose which character to edit from the character buttons
+3. **Click Cells**: Toggle cells between filled and empty by clicking them
+4. **Set Baseline**: Use the slider to set which row is the baseline (where the character bottom sits)
+5. **Adjust Character Height**: Use "Change Character Height" to make characters taller or shorter
+6. **Add/Delete Characters**: Use the grid controls to manage characters
+7. **Change Grid Size**: Adjust the width and height of the character grid
+8. **Save Changes**: Click "Save Alphabet" to apply your changes
+
+The editor provides:
+- **Visual Grid**: Click cells to toggle between filled (blue) and empty (gray)
+- **Baseline Control**: Set the baseline row (highlighted in red) for proper character alignment
+- **Variable Height Support**: Each character can have its own height while maintaining baseline alignment
+- **Character Preview**: See how each character looks in real-time
+- **Grid Controls**: Add, delete characters, change grid dimensions, and adjust individual character heights
+- **Alphabet Info**: View current alphabet details and statistics
+
+**Baseline Feature**: The baseline determines where the bottom of each character sits vertically. This is important for proper alignment when characters have different heights (like lowercase letters with descenders). The baseline row is highlighted in red in the editor grid. By default, the baseline is set to the bottom row of the character grid.
+
+**Variable Height Feature**: Characters can now have different heights within the same alphabet. Each character maintains its own height while being properly aligned along the baseline. This allows for more realistic typography where characters like 'g', 'j', 'p', 'q', 'y' can have descenders that extend below the baseline, while other characters maintain their standard height.
 
 ### Adding New Alphabets
 
@@ -36,13 +62,29 @@ Your alphabet file should follow this JSON structure:
   "description": "Description of your alphabet",
   "height": 5,
   "characters": {
-    "A": [
-      " █ ",
-      "█ █",
-      "███",
-      "█ █",
-      "█ █"
-    ]
+    "A": {
+      "pattern": [
+        " █ ",
+        "█ █",
+        "███",
+        "█ █",
+        "█ █"
+      ],
+      "baseline": 3,
+      "height": 5
+    },
+    "g": {
+      "pattern": [
+        " ███ ",
+        "█   █",
+        "█   █",
+        " ███ ",
+        "    █",
+        " ███ "
+      ],
+      "baseline": 3,
+      "height": 6
+    }
   }
 }
 ```
@@ -50,11 +92,16 @@ Your alphabet file should follow this JSON structure:
 **Format Rules:**
 - `name`: String - The name of your alphabet
 - `description`: String - Description of the alphabet
-- `height`: Number - Number of rows for each character (1-20)
-- `characters`: Object - Each character maps to an array of strings
-- Character patterns use `1`, `x`, or `█` for stitches and spaces for empty cells
-- Each row in a character pattern should have the same width
-- All characters must have exactly the same number of rows as specified in `height`
+- `height`: Number - Default number of rows for characters (1-20)
+- `characters`: Object - Each character maps to an object with pattern, baseline, and height
+- `pattern`: Array of strings - The character pattern using `1`, `x`, or `█` for stitches and spaces for empty cells
+- `baseline`: Number - The row index (0-based) where the character bottom sits
+- `height`: Number - The individual character height (can vary per character)
+- Each row in a character pattern can have different widths (variable-width support)
+- Each character can have different heights (variable-height support)
+- All characters are aligned along their baselines for proper typography
+
+**Legacy Format Support**: The app also supports the old format where characters are direct arrays of strings. When editing these alphabets, they will be automatically converted to the new format with baseline and height information.
 
 ### Built-in Alphabets
 
@@ -79,9 +126,8 @@ This will:
 
 ### Understanding the Chart
 
-- **Blue cells**: Main color stitches  
-- **Red cells**: Contrast color stitches
-- **Gray cells**: Skip/empty spaces
+- **Gray cells**: Main color stitches  
+- **Blue cells**: Contrast color stitches
 - **Character labels**: Show which character each column represents
 - **Chart dimensions**: Displayed at the bottom of the preview
 
@@ -100,7 +146,8 @@ StitchSpeak/
 │   ├── components/
 │   │   ├── TextInput.jsx                    # Text input handling
 │   │   ├── CrochetChart.jsx                 # Chart rendering and display
-│   │   └── AlphabetInfo.jsx                 # Alphabet information display
+│   │   ├── AlphabetInfo.jsx                 # Alphabet information display
+│   │   └── AlphabetEditor.jsx               # Visual alphabet editor
 │   ├── utils/
 │   │   ├── alphabetLoader.js                # Dynamic alphabet loading utility
 │   │   └── fontValidator.js                 # Font validation utility
